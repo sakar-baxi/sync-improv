@@ -61,12 +61,22 @@ const initialCategories = [
 ];
 
 const growthTrends = [
-  { month: 'Jun 25', tickets: 25, debt: 8, mapping: 5, sync: 4, setup: 6 },
-  { month: 'Jul 25', tickets: 45, debt: 18, mapping: 12, sync: 10, setup: 12 },
-  { month: 'Aug 25', tickets: 68, debt: 32, mapping: 22, sync: 15, setup: 18 },
-  { month: 'Sep 25', tickets: 92, debt: 54, mapping: 32, sync: 22, setup: 28 },
-  { month: 'Oct 25', tickets: 112, debt: 70, mapping: 45, sync: 35, setup: 32 },
-  { month: 'Nov 25', tickets: 88, debt: 45, mapping: 30, sync: 25, setup: 22 },
+  { month: 'Dec 24', tickets: 3, debt: 0, mapping: 0, sync: 2, setup: 0 }, 
+  { month: 'Jan 25', tickets: 5, debt: 1, mapping: 0, sync: 2, setup: 0 }, 
+  { month: 'Apr 25', tickets: 1, debt: 1, mapping: 0, sync: 0, setup: 0 }, 
+  { month: 'May 25', tickets: 21, debt: 6, mapping: 0, sync: 3, setup: 1 }, 
+  { month: 'Jun 25', tickets: 33, debt: 14, mapping: 8, sync: 3, setup: 3 }, 
+  { month: 'Jul 25', tickets: 56, debt: 28, mapping: 14, sync: 4, setup: 1 }, 
+  { month: 'Aug 25', tickets: 37, debt: 37, mapping: 8, sync: 5, setup: 2 }, 
+  { month: 'Sep 25', tickets: 56, debt: 51, mapping: 9, sync: 8, setup: 3 }, 
+  { month: 'Oct 25', tickets: 28, debt: 58, mapping: 6, sync: 5, setup: 2 }, 
+  { month: 'Nov 25', tickets: 18, debt: 62, mapping: 3, sync: 1, setup: 1 }, 
+  { month: 'Dec 25', tickets: 43, debt: 72, mapping: 5, sync: 4, setup: 1 }, 
+  { month: 'Jan 26', tickets: 44, debt: 83, mapping: 5, sync: 4, setup: 6 }, 
+  { month: 'Feb 26', tickets: 42, debt: 93, mapping: 8, sync: 1, setup: 4 }, 
+  { month: 'Mar 26', tickets: 40, debt: 103, mapping: 5, sync: 6, setup: 3 }, 
+  { month: 'Apr 26', tickets: 65, debt: 119, mapping: 9, sync: 13, setup: 7 }, 
+  { month: 'May 26', tickets: 29, debt: 126, mapping: 2, sync: 7, setup: 6 }, 
 ];
 
 const maturityStats = [
@@ -85,11 +95,13 @@ const repeatFailures = [
 ];
 
 const initialResolutions = [
-  { id: '1', type: "Sync & Data Transfer", frequency: 66, approach: "Run Initial Sync / Auto-Retry Engine", status: "In Progress" },
-  { id: '2', type: "Field Mapping", frequency: 99, approach: "Visual Config Mapper for CSMs", status: "To Do" },
-  { id: '3', type: "Integration Setup", frequency: 89, approach: "Self-Serve Onboarding Wizard", status: "Need Feedback" },
-  { id: '4', type: "Access & Auth", frequency: 18, approach: "Credential Refresh & Vault System", status: "To Do" },
-  { id: '5', type: "UI/UX Visibility", frequency: 25, approach: "Real-time Client Health Portal", status: "In QA" }
+  { id: '1', type: "General Support", frequency: 192, approach: "In-app Help Center / Automated Docs", status: "To Do", subIssues: ["'How-to' queries for basic navigation", "Lack of clear self-serve documentation", "Unnecessary escalation of simple questions"] },
+  { id: '2', type: "Field Mapping", frequency: 99, approach: "Visual Config Mapper for CSMs", status: "To Do", subIssues: ["Mismatch in Date/Time formats (UTC vs IST)", "Custom field schemas unrecognised", "Null value injection crashing pipelines"] },
+  { id: '3', type: "Integration Setup", frequency: 89, approach: "Self-Serve Onboarding Wizard", status: "Need Feedback", subIssues: ["API Keys configured incorrectly", "Webhook endpoint mapping errors", "Firewall IP whitelisting friction"] },
+  { id: '4', type: "Sync Failures", frequency: 66, approach: "Automated Retry Engine", status: "In Progress", subIssues: ["3rd-Party API Rate Limit hits (HTTP 429)", "Internal Server Timeouts (HTTP 504)", "Memory faults due to unpaginated payloads"] },
+  { id: '5', type: "UI/UX Visibility", frequency: 25, approach: "Real-time Client Health Portal", status: "In QA", subIssues: ["No historical log of syncs available", "Error messages too technical for non-devs", "Missing 'Last Synced' timestamp UI"] },
+  { id: '6', type: "Access & Auth", frequency: 18, approach: "Proactive Token & Vault System", status: "To Do", subIssues: ["OAuth tokens expiring without auto-refresh", "Hardcoded credential rotation failures", "Multi-tenant auth context leakage"] },
+  { id: '7', type: "Data Maintenance", frequency: 9, approach: "Self-serve Purge API", status: "Done", subIssues: ["Stale test records blocking prod data", "Bulk deletion requests for PII compliance", "Manual SQL reconciliation required"] }
 ];
 
 const statusOptions = ["In Progress", "Not Required", "Need Feedback", "To Do", "Done", "In QA"];
@@ -103,12 +115,26 @@ const SortableRow = ({ res, idx, isEditing, onEdit, onStatusChange, onApproachCh
 
   return (
     <tr ref={setNodeRef} style={style} className={`group ${idx < 2 ? 'bg-rose-50/10' : ''}`}>
-      <td className="w-10 px-4"><button {...attributes} {...listeners} className="p-2 text-slate-300 hover:text-slate-600 cursor-grab"><GripVertical size={14} /></button></td>
-      <td className="py-4"><div className="flex flex-col gap-1"><span className={`text-[8px] font-black w-fit px-1.5 py-0.5 rounded text-white ${p.color}`}>{p.label}</span><span className="font-bold text-slate-800 text-sm">{res.type}</span></div></td>
-      <td className="font-black text-slate-900">{res.frequency}</td>
-      <td>{isEditing ? <input value={res.approach} onChange={(e) => onApproachChange(idx, e.target.value)} className="w-full bg-white border border-indigo-200 rounded px-2 py-1 text-sm font-bold shadow-sm" /> : <span className="text-sm font-medium text-slate-500">{res.approach}</span>}</td>
-      <td><select value={res.status} onChange={(e) => onStatusChange(idx, e.target.value)} className="text-[10px] font-black uppercase border rounded px-2 py-1 bg-white">{statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}</select></td>
-      <td className="text-right pr-6"><button onClick={() => onEdit(isEditing ? null : idx)} className="text-slate-300 hover:text-indigo-600">{isEditing ? <Save size={16} /> : <Edit3 size={16} />}</button></td>
+      <td className="w-10 px-4 align-top pt-5"><button {...attributes} {...listeners} className="p-2 text-slate-300 hover:text-slate-600 cursor-grab"><GripVertical size={14} /></button></td>
+      <td className="py-4">
+        <div className="flex flex-col gap-1">
+          <span className={`text-[8px] font-black w-fit px-1.5 py-0.5 rounded text-white ${p.color}`}>{p.label}</span>
+          <span className="font-bold text-slate-800 text-sm">{res.type}</span>
+          {res.subIssues && (
+            <ul className="mt-2 space-y-1">
+              {res.subIssues.map((sub, i) => (
+                <li key={i} className="text-[10px] text-slate-500 font-medium flex items-start gap-1">
+                  <span className="text-indigo-400 mt-0.5">•</span> {sub}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </td>
+      <td className="font-black text-slate-900 align-top pt-8">{res.frequency}</td>
+      <td className="align-top pt-7">{isEditing ? <input value={res.approach} onChange={(e) => onApproachChange(idx, e.target.value)} className="w-full bg-white border border-indigo-200 rounded px-2 py-1 text-sm font-bold shadow-sm" /> : <span className="text-sm font-medium text-slate-500">{res.approach}</span>}</td>
+      <td className="align-top pt-7"><select value={res.status} onChange={(e) => onStatusChange(idx, e.target.value)} className="text-[10px] font-black uppercase border rounded px-2 py-1 bg-white">{statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}</select></td>
+      <td className="text-right pr-6 align-top pt-7"><button onClick={() => onEdit(isEditing ? null : idx)} className="text-slate-300 hover:text-indigo-600">{isEditing ? <Save size={16} /> : <Edit3 size={16} />}</button></td>
     </tr>
   );
 };
